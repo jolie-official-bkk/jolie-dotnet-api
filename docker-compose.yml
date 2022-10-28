@@ -1,0 +1,36 @@
+version: "3.8"
+services:
+  jolie-dotnet-api-service:
+    restart: on-failure
+    image: image-8080-jolie-dotnet-api
+    container_name: container-8080-jolie-dotnet-api
+    depends_on:
+      - jolie-postgres
+    build:
+      context: ./JolieApi/JolieApi
+      dockerfile: Dockerfile
+    ports:
+      - 8080:80
+    networks:
+      - app-network
+
+  jolie-postgres:
+    image: postgres:14.1-alpine
+    restart: always
+    environment:
+      - POSTGRES_USER=${DATABASE_USER}
+      - POSTGRES_PASSWORD=${DATABASE_PASSWORD}
+    ports:
+      - "${DATABASE_PORT}:5432"
+    volumes:
+      - db:/var/lib/postgresql/data
+    networks:
+      - app-network
+
+volumes:
+  db:
+    driver: local
+
+networks:
+  app-network:
+    driver: bridge
