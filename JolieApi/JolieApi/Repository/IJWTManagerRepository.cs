@@ -12,6 +12,7 @@ namespace SEENApiV2_Admin.Repository
     {
         string GenerateJwtToken(string email);
         bool ValidateToken(string token);
+        string GetEmailFromToken(string token);
     }
 
     public class JWTManagerRepository : IJWTManagerRepository
@@ -70,6 +71,35 @@ namespace SEENApiV2_Admin.Repository
             {
                 // return null if validation fails
                 return false;
+            }
+        }
+
+        public string GetEmailFromToken(string token)
+        {
+            if (token == null)
+                return "";
+
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.ASCII.GetBytes(_IConfig["JWT:JWT_SECRET_KEY"]);
+            try
+            {
+                tokenHandler.ValidateToken(token, new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(key),
+                    ValidateIssuer = false,
+                    ValidateAudience = false,
+                    ClockSkew = TimeSpan.Zero
+                }, out SecurityToken validatedToken);
+
+                var jwtToken = (JwtSecurityToken)validatedToken;
+                string email = jwtToken.Claims.First(x => x.Type == JwtRegisteredClaimNames.Email).Value;
+                return email;
+            }
+            catch
+            {
+                // return null if validation fails
+                return "";
             }
         }
     }

@@ -9,6 +9,7 @@ namespace JolieApi.Repository
     public interface IUserManagerRepository
     {
         List<User> GetUsers();
+        UserInfo GetUserInfo(string token);
         string Login(LoginRequest requestBody);
         string Register(RegisterRequest requestBody);
     }
@@ -27,6 +28,29 @@ namespace JolieApi.Repository
         public List<User> GetUsers()
         {
             return _context.users.Select(s => s).ToList();
+        }
+
+        public UserInfo GetUserInfo(string token)
+        {
+            string email = _jWtManagerRepository.GetEmailFromToken(token);
+
+            var user = _context.users.Select(s => new UserInfo { 
+                user_id = s.user_id,
+                email = s.email,
+                first_name = s.first_name,
+                last_name = s.last_name,
+                date_of_birth = s.date_of_birth,
+                gender = s.gender
+            }).Where(w => w.email == email).SingleOrDefault();
+
+            if (user != null)
+            {
+                return user;
+            }
+            else
+            {
+                return new UserInfo();
+            }
         }
 
         public string Login(LoginRequest requestBody)

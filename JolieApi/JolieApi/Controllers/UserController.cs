@@ -46,6 +46,18 @@ namespace JolieApi.Controllers
             });
         }
 
+        [Authorize]
+        [HttpGet]
+        public IActionResult getUserInfo(string token)
+        {
+            return Ok(new
+            {
+                status = HttpStatusCode.OK,
+                message = "success",
+                data = _userManager.GetUserInfo(token),
+            });
+        }
+
         [HttpGet]
         public IActionResult ping()
         {
