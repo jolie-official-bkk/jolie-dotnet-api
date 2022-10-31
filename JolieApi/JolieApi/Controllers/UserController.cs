@@ -13,13 +13,13 @@ namespace JolieApi.Controllers
     [Route("/api/user/[action]")]
     public class UserController : ControllerBase
     {
-        //private readonly IJWTManagerRepository _jWTManager;
+        private readonly IJWTManagerRepository _jWTManager;
         private readonly IUserManagerRepository _userManager;
 
         public UserController(IUserManagerRepository userManager, IJWTManagerRepository jWTManagerRepository)
         {
             this._userManager = userManager;
-            //this._jWTManager = jWTManagerRepository;
+            this._jWTManager = jWTManagerRepository;
         }
 
         //[HttpGet]
@@ -28,11 +28,16 @@ namespace JolieApi.Controllers
         //    return Ok(_jWTManager.GenerateJwtToken(email));
         //}
 
-        //[HttpGet]
-        //public IActionResult validateToken([FromQuery] string token)
-        //{
-        //    return Ok(_jWTManager.ValidateToken(token));
-        //}
+        [HttpGet]
+        public IActionResult validateToken([FromQuery] string token)
+        {
+            return Ok(new
+            {
+                status = HttpStatusCode.OK,
+                message = "success",
+                data = _jWTManager.ValidateToken(token)
+            });
+        }
 
         [Authorize]
         [HttpGet]
