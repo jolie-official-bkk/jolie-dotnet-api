@@ -31,7 +31,7 @@ namespace JolieApi.Controllers
             });
         }
 
-        [Authorize]
+        //[Authorize]
         [HttpPost]
         public IActionResult placeOrder([FromBody] PlaceOrderRequest order)
         {
