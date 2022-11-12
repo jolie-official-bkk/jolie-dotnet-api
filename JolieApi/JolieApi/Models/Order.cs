@@ -18,7 +18,7 @@ namespace JolieApi.Models
         public List<string> hair_treat { get; set; }
         public List<string> hair_goal { get; set; }
         public List<string> formula { get; set; }
-        [StringLength(9, MinimumLength = 6)]
+        [StringLength(255, MinimumLength = 3)]
         public string color { get; set; }
         [StringLength(255, MinimumLength = 3)]
         public string scent { get; set; }
